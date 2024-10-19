@@ -1,40 +1,37 @@
 pipeline {
-    agent any // This means that the pipeline can run on any available agent
+    agent any // Runs on any available Jenkins agent
 
     stages {
-        stage('Checkout') { // Stage to checkout the source code from the repository
+        stage('Checkout') { 
             steps {
-                git branch: 'main', url: 'https://github.com/ndanish1/COMP367WebApp.git' // Replace with your repo URL
+                git branch: 'main', url: 'https://github.com/ndanish1/COMP367WebApp.git' // Replace with your Git repo URL
             }
         }
 
-        stage('Build') { // Stage to build the application
+        stage('Build') { 
             steps {
                 script {
-                    // Run the Maven build
-                    sh 'mvn clean install' // For Unix/Linux
-                    // Uncomment the next line for Windows:
-                    // bat 'mvn clean install'
+                    // Run the Maven build for Windows
+                    bat 'mvn clean install' // Use bat for Windows
                 }
             }
         }
 
-        stage('Test') { // Stage to run tests
+        stage('Test') { 
             steps {
                 script {
-                    // Run the Maven tests
-                    sh 'mvn test' // For Unix/Linux
-                    // Uncomment the next line for Windows:
-                    // bat 'mvn test'
+                    // Run the Maven tests for Windows
+                    bat 'mvn test' // Use bat for Windows
                 }
             }
         }
 
-        stage('Deploy') { // Stage to deploy the application
+        stage('Deploy') { 
             steps {
-                echo 'Deploying the application...' // Replace this with your actual deployment steps
-                // Add your deployment commands here if needed
+                echo 'Deploying the application...' 
+                // Add your Windows deployment commands here
             }
         }
     }
 }
+
