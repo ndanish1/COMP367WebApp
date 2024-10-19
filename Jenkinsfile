@@ -1,6 +1,10 @@
 pipeline {
     agent any // Runs on any available Jenkins agent
 
+    tools {
+        maven 'Maven3.9.9' // Use the configured Maven version
+    }
+
     stages {
         stage('Checkout') { 
             steps {
@@ -33,5 +37,7 @@ pipeline {
             }
         }
     }
+}
+
 }
 
