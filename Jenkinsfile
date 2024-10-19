@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') { // Stage to checkout the source code from the repository
             steps {
-                git 'https://github.com/ndanish1/COMP367WebApp.git' // Replace with your repo URL
+                git branch: 'main', url: 'https://github.com/ndanish1/COMP367WebApp.git' // Replace with your repo URL
             }
         }
 
