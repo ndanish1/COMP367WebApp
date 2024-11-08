@@ -1,45 +1,47 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'  // Replace with the ID of your Secret Text credentials
+    tools {
+        maven 'MAVEN3'  // This is the tool installation name that you've configured in Jenkins
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from GitHub
-                git 'https://github.com/ndanish1/COMP367WebApp'
+                // Checkout the code from GitHub repository (assuming 'main' is the branch)
+                git branch: 'main', url: 'https://github.com/ndanish1/COMP367WebApp.git'
             }
         }
 
         stage('Build Maven Project') {
             steps {
-                // Run Maven build
-                sh 'mvn clean package'
+                // Use Windows cmd shell for executing Maven commands
+                bat 'mvn clean install'
             }
         }
 
-        stage('Docker Login') {
+        stage('Unit Test') {
             steps {
-                // Login to Docker Hub using Secret Text credentials
-                withCredentials([string(credentialsId: "${DOCKER_HUB_CREDENTIALS}", variable: 'DOCKER_PASSWORD')]) {
-                    sh 'docker login --username naveeddanish1 --password $DOCKER_PASSWORD'
-                }
+                // Run unit tests (if any exist in the Maven project)
+                bat 'mvn test'
             }
         }
 
         stage('Docker Build') {
             steps {
-                // Build Docker image
-                sh 'docker build -t naveeddanish1/maven-java-webapp .'
+                // Build the Docker image
+                bat 'docker build -t naveeddanish1/maven-java-webapp .'
             }
         }
 
-        stage('Docker Push') {
+        stage('Docker Hub Push') {
             steps {
-                // Push Docker image to Docker Hub
-                sh 'docker push naveeddanish1/maven-java-webapp'
+                withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'DOCKER_PASS')]) {
+                    // Log in to Docker Hub
+                    bat 'docker login -u naveeddanish1 -p %DOCKER_PASS%'
+                    // Push the Docker image to Docker Hub
+                    bat 'docker push naveeddanish1/maven-java-webapp'
+                }
             }
         }
     }
